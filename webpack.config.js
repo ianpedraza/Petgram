@@ -2,7 +2,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   output: {
-    filename: "app.bundle.js",
+    filename: "bundle.js",
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -12,7 +15,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
