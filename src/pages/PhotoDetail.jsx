@@ -1,8 +1,15 @@
 import React from "react";
+
 import { PhotoCard } from "../components/PhotoCard";
 import { usePhotoCard } from "../hooks/usePhotoCard";
 
-export const PhotoCardWithQuery = ({ id }) => {
+export const PhotoDetail = (props) => {
+    const {
+        match: {
+            params: { id },
+        },
+    } = props;
+
     const { loading, error, data } = usePhotoCard(id);
 
     if (error) {

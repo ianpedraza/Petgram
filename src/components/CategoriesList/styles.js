@@ -9,7 +9,7 @@ export const List = styled.ul`
   ${(props) =>
     props.fixed &&
     css`
-      ${fadeIn()}
+      ${fadeIn()};
       background: #fff;
       border-radius: 60px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);

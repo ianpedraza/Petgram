@@ -1,9 +1,16 @@
 import React from "react";
-import { CategoriesList } from "./components/CategoriesList";
-import { GlobalStyle } from "./styles/GlobalStyles";
-import { PhotoCardsList } from "./components/PhotoCardsList";
-import { Logo } from "./components/Logo";
-import { PhotoCardWithQuery } from "./containers/PhotoCardWithQuery";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+
+import { Layout } from "./components/Layout";
+import { PhotoDetail } from "./pages/PhotoDetail";
+import { Home } from "./pages/Home";
+import { Favorites } from "./pages/Favorites";
+import { User } from "./pages/User";
+import { NotRegisteredUser } from "./pages/NotRegisteredUser";
+
+const UserLogged = ({ children }) => {
+    return children({ isAuth: false });
+};
 
 const App = () => {
     const urlParams = new window.URLSearchParams(window.location.search);
@@ -11,16 +18,51 @@ const App = () => {
 
     return (
         <>
-            <GlobalStyle />
-            <Logo />
-            {detailId ? (
-                <PhotoCardWithQuery id={detailId} />
-            ) : (
-                <>
-                    <CategoriesList />
-                    <PhotoCardsList categoryId={1} />
-                </>
-            )}
+            <BrowserRouter>
+                <Layout>
+                    <Switch>
+                        <Route exact path="/" component={Home} />
+                        <Route exact path="/category/:id" component={Home} />
+                        <Route
+                            exact
+                            path="/photo/:id"
+                            component={PhotoDetail}
+                        />
+
+                        <UserLogged>
+                            {({ isAuth }) =>
+                                isAuth ? (
+                                    <>
+                                        <Route
+                                            exact
+                                            path="/favorites"
+                                            component={Favorites}
+                                        />
+                                        <Route
+                                            exact
+                                            path="/user"
+                                            component={User}
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <Route
+                                            exact
+                                            path="/favorites"
+                                            component={NotRegisteredUser}
+                                        />
+                                        <Route
+                                            exact
+                                            path="/user"
+                                            component={NotRegisteredUser}
+                                        />
+                                    </>
+                                )
+                            }
+                        </UserLogged>
+                    </Switch>
+                </Layout>
+            </BrowserRouter>
         </>
     );
 };
