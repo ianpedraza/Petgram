@@ -9,14 +9,11 @@ const LOGIN = gql`
 
 export const loginMutation = () => {
   const [login, { loading, error, data }] = useMutation(LOGIN);
-  const loadingLogin = loading;
-  const errorLoading = error;
-  const dataLoading = data;
 
   return {
     login,
-    loadingLogin,
-    errorLoading,
-    dataLoading,
+    loading,
+    error,
+    data,
   };
 };
