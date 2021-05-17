@@ -1,30 +1,34 @@
-import React, { useContext } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-
-import { Layout } from "./components/Layout";
-import { PhotoDetail } from "./pages/PhotoDetail";
-import { Home } from "./pages/Home";
-import { Favorites } from "./pages/Favorites";
-import { User } from "./pages/User";
-import { NotRegisteredUser } from "./pages/NotRegisteredUser";
+import React, { Suspense } from "react";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 
 import AppContext from "./context/AppContext";
 import { useInitialState } from "./hooks/useInitialState";
 
-const UserLogged = ({ children }) => {
-    const { state } = useContext(AppContext);
-    const { isAuth } = state;
+import { Layout } from "./components/Layout";
 
-    return children({ isAuth: isAuth });
-};
+// import { PhotoDetail } from "./pages/PhotoDetail";
+// import { Home } from "./pages/Home";
+// import { Favorites } from "./pages/Favorites";
+// import { User } from "./pages/User";
+// import { NotFound } from "./pages/NotFound";
+// import { NotRegisteredUser } from "./pages/NotRegisteredUser";
+
+const Home = React.lazy(() => import("./pages/Home"));
+const PhotoDetail = React.lazy(() => import("./pages/PhotoDetail"));
+const Favorites = React.lazy(() => import("./pages/Favorites"));
+const User = React.lazy(() => import("./pages/User"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
+const NotRegisteredUser = React.lazy(() => import("./pages/NotRegisteredUser"));
 
 const App = () => {
     const initialState = useInitialState();
+    const { state } = initialState;
+    const { isAuth } = state;
 
     return (
-        <>
-            <AppContext.Provider value={initialState}>
-                <BrowserRouter>
+        <Suspense fallback={<div />}>
+            <BrowserRouter>
+                <AppContext.Provider value={initialState}>
                     <Layout>
                         <Switch>
                             <Route exact path="/" component={Home} />
@@ -39,42 +43,34 @@ const App = () => {
                                 component={PhotoDetail}
                             />
 
-                            <UserLogged>
-                                {({ isAuth }) =>
-                                    isAuth ? (
-                                        <>
-                                            <Route
-                                                exact
-                                                path="/favorites"
-                                                component={Favorites}
-                                            />
-                                            <Route
-                                                exact
-                                                path="/user"
-                                                component={User}
-                                            />
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Route
-                                                exact
-                                                path="/favorites"
-                                                component={NotRegisteredUser}
-                                            />
-                                            <Route
-                                                exact
-                                                path="/user"
-                                                component={NotRegisteredUser}
-                                            />
-                                        </>
-                                    )
-                                }
-                            </UserLogged>
+                            {!isAuth && (
+                                <Route
+                                    exact
+                                    path="/login"
+                                    component={NotRegisteredUser}
+                                />
+                            )}
+
+                            {!isAuth && (
+                                <Redirect from="/favorites" to="/login" />
+                            )}
+                            {!isAuth && <Redirect from="/user" to="/login" />}
+
+                            {isAuth && <Redirect from="/login" to="/" />}
+
+                            <Route
+                                exact
+                                path="/favorites"
+                                component={Favorites}
+                            />
+
+                            <Route exact path="/user" component={User} />
+                            <Route component={NotFound} />
                         </Switch>
                     </Layout>
-                </BrowserRouter>
-            </AppContext.Provider>
-        </>
+                </AppContext.Provider>
+            </BrowserRouter>
+        </Suspense>
     );
 };
 

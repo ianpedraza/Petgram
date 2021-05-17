@@ -3,7 +3,7 @@ import { Category } from "../Category";
 import { List, Item } from "./styles";
 import { useCategoriesData } from "../../hooks/useCategoriesData";
 
-export const CategoriesList = () => {
+const CategoriesListComponent = () => {
     const { categories, loading } = useCategoriesData();
     const [showFixed, setShowFixed] = useState(false);
 
@@ -44,3 +44,5 @@ export const CategoriesList = () => {
         </>
     );
 };
+
+export const CategoriesList = React.memo(CategoriesListComponent);

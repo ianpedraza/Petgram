@@ -1,11 +1,17 @@
 import React from "react";
 import { FavsWithQuery } from "../containers/FavsWithQuery";
 
-export const Favorites = () => {
+import { HelmetLayout } from "../components/HelmetLayout";
+
+const Favorites = () => {
     return (
-        <>
-            <h1>Favorites</h1>
+        <HelmetLayout
+            title="Tus favoritos"
+            subtitle="Aquí puedes encontrar tus favoritos"
+        >
             <FavsWithQuery />
-        </>
+        </HelmetLayout>
     );
 };
+
+export default Favorites;
